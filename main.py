@@ -28,7 +28,7 @@ headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Geck
 parent_dir = "C:\\Users\\conno\\Documents\\Programming\\WikiCommonsScrapper\\Images"
 
 #add search term here
-search_name = "Jacek Malczewski"
+search_name = ""
 
 path = os.path.join(parent_dir, search_name)
 
