@@ -19,7 +19,6 @@ print(sys.path)
 options = Options()
 options.add_argument('--ignore-certificate-errors')
 options.add_argument('--incognito')
-# options.add_argument('--headless')
 driver = webdriver.Firefox(options=options)
 
 
@@ -38,16 +37,12 @@ try:
 except:
     print("Already a '% s'" % search_name)
 
-# https://commons.wikimedia.org/wiki/Category:Images
-
-# add to URL
-
 search_name = search_name.replace(" ","+")
 print(search_name)
 
 
 driver.get("https://commons.wikimedia.org/w/index.php?search="+search_name+"&title=Special:MediaSearch&go=Go&type=image")
-# scroll to bottom of page and wait in selenium
+# scroll to bottom of page and wait for next page to load in selenium
 driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 time.sleep(3)
 print("scrolled once")
@@ -60,7 +55,7 @@ driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 time.sleep(3)
 print("scrolled third")
 wait=WebDriverWait(driver,2)
-# it will wait for 250 seconds an element to come into view, you can change the #value
+# scraper will wait for 250 seconds an element to come into view, you can change the #value
 # getting the button by class name
 try:
     buttons = driver.find_element_by_xpath("//button[@class='sd-button sdms-load-more sd-button--framed sd-button--progressive']/span[@class='sd-button__content']")
@@ -94,8 +89,8 @@ except:
 
 try:
         wait = WebDriverWait(driver, 2)
-        # it will wait for 250 seconds an element to come into view, you can change the #value
-        # getting the button by class name
+        # scraper will wait for 250 seconds an element to come into view, you can change the #value
+        # get the button by class name
         buttons = driver.find_element_by_xpath(
             "//button[@class='sd-button sdms-load-more sd-button--framed sd-button--progressive']/span[@class='sd-button__content']")
         print(buttons)
@@ -105,24 +100,16 @@ except:
     print("An exception occurred")
 
 
-
-#commented out bc using selenium
-# URL = "https://commons.wikimedia.org/w/index.php?search="+search_name+"&title=Special:MediaSearch&go=Go&type=image"
-# page = requests.get(URL, headers=headers)
-
 # This replaces the request function, since we are using selenium
 page = driver.page_source
 
-#print(page.text)
 
 soup = BeautifulSoup(page, "html.parser")
 
 # this will find all the links.
 thumbnails = soup.find_all(class_='sdms-image-result')
 
-# this will find one
-# thumbnails = []
-# thumbnails.append(soup.find(class_='sdms-image-result'))
+
 
 links= []
 
@@ -136,9 +123,9 @@ for link in links:
     image_page = requests.get(link, headers=headers)
     image_soup = BeautifulSoup(image_page.content, "html.parser")
     image_element = image_soup.find(class_='fullImageLink')
-    #print(image_element)
+    
     image_a = image_element.find('a')
-    #print(image_a)
+    
     image_link = image_a.get('href')
     print(image_link)
     res = requests.get(image_link, headers=headers)
@@ -156,7 +143,3 @@ for link in links:
     print(count)
 
 
-
-
-# Wikimedia sites require a HTTP User-Agent header for all requests. https://www.geeksforgeeks.org/http-headers-user-agent/
-# Add in selenium to scroll to the bottom of the page and get even more images.
